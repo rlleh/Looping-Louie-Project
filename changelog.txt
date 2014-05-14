@@ -1,0 +1,7 @@
+
+changelog
+_________
+
+
+Pre Alpha 1.0 - "Init repo" - 17:19 14.05.2014
+- bisheriger Code wurde hinzugefügt. 

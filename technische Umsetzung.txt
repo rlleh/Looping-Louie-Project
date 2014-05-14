@@ -1,0 +1,28 @@
+
+technische Umsetzung
+____________________
+
+
+Material:
+---------
+-Looping Loui Spiel
+- Akku
+- Regler 
+
+
+Aufbau:
+-------
+
+
+Kommunikation:
+--------------
+Vom Microkontroller werden Spannungsintervalle erzeugt, 
+deren Länge dann vom Regler in eine Spannung umgesetzt werden.
+
+
+Daten speziell für den verwendeten Akku und Regler:
+---------------------------------------------------
+ 500 microsekunden =   0V     0%
+1500 microsekunden = 8,3V   100%
+>2200microsekunde  = Überspannung 
+=> 1% = 10 microsekunden
