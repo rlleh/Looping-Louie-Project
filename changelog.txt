@@ -3,9 +3,10 @@ changelog
 _________
 
 
+"Rechtschreibfehler sinus.ino korrigiert" 22:13 16.05.2014
 
-Pre Alpha 1.0.1 "Zusammenfürung der READMEs" 17:45 14.05.2014
+"Zusammenfürung der READMEs" 17:45 14.05.2014
 
 
-Pre Alpha 1.0 - "Init repo" - 17:19 14.05.2014
+"Init repo" - 17:19 14.05.2014
 - bisheriger Code wurde hinzugefügt. 

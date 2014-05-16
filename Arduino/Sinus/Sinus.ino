@@ -3,14 +3,14 @@ Sinus
 _____
 
 Ziel ist es, eine sinusförmige Geschwindigkeit zu erzeugen. 
-Die ungenauigkeit ist auf die Rechenungenauigkeit des Arduinos zurückzuführen.
+Die Ungenauigkeit ist auf die Rechenungenauigkeit des Arduinos zurückzuführen.
 */
 
 
 const byte servoPort = 7;          
 const int pi = 3.1415926;
 
-float AnzahlDurchlaeufe;   //Anzahl der erfolgten Schleifendurchläufe, zur Berechnung des Sinuswerts benutzt (so ist auch die Genauigkeit bzw. geschwindigkeit der Änderung einstellbar
+float AnzahlDurchlaeufe;   //Anzahl der erfolgten Schleifendurchläufe, zur Berechnung des Sinuswerts benutzt (so ist auch die Genauigkeit bzw. Geschwindigkeit der Änderung einstellbar.)
 float Sinuswert;           //Ergebnis der Sinusrechnung
 float Prozent;             //prozentuale Zeit der max. Zeit, die das Siganl auf max. Spannung ist (500micos = 0%, 1500micos = 100%)
 float pause;               //Zeit in ms, die Spannung auf max. Spannung ist
@@ -43,7 +43,7 @@ void loop()
 
 void sinusrechnung() 
 {
-  Bogenmass = (AnzahlDurchlaeufe / 100 )* pi;   //mussn ausgelagert werden, rechnungen inehalb sin() nicht möglich
+  Bogenmass = (AnzahlDurchlaeufe / 100 )* pi;   //muss ausgelagert werden, Rechnungen inehalb sin() nicht möglich
   Sinuswert = sin(Bogenmass);
 }
 
@@ -55,9 +55,9 @@ void mappen()
 
 void bewegung() //Wie in "tech. Umsetzung" beschrieben wird das PWM-Signal erzeugt
 {
-  digitalWrite(servoPort, HIGH);  //maximalspannung am ServoPort
+  digitalWrite(servoPort, HIGH);  //Maximalspannung am ServoPort
   delayMicroseconds (pause);  //Pause mit der bestimmten Länge (1 ms= 1000 microsekunden)
-  digitalWrite(servoPort, LOW);   //minimalspannung am ServoPort
+  digitalWrite(servoPort, LOW);   //mMnimalspannung am ServoPort
   delay(20);
 }
 
