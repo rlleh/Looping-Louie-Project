@@ -58,7 +58,7 @@ void bewegung() //Wie in "tech. Umsetzung" beschrieben wird das PWM-Signal erzeu
   digitalWrite(servoPort, HIGH);  //Maximalspannung am ServoPort
   delayMicroseconds (pause);  //Pause mit der bestimmten Länge (1 ms= 1000 microsekunden)
   digitalWrite(servoPort, LOW);   //mMnimalspannung am ServoPort
-  delay(20);
+  delayMicroseconds(20000 - pause);
 }
 
 void anzeigen() //Zur Kontrolle der Variablen 
