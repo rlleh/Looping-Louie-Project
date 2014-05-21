@@ -7,12 +7,12 @@ Die Ungenauigkeit ist auf die Rechenungenauigkeit des Arduinos zurückzuführen.
 */
 
 
-const byte servoPort = 7;          
-const int pi = 3.1415926;
+#define servoPort 7          
+#define pi 3.1415926
 
 float AnzahlDurchlaeufe;   //Anzahl der erfolgten Schleifendurchläufe, zur Berechnung des Sinuswerts benutzt (so ist auch die Genauigkeit bzw. Geschwindigkeit der Änderung einstellbar.)
 float Sinuswert;           //Ergebnis der Sinusrechnung
-float Prozent;             //prozentuale Zeit der max. Zeit, die das Siganl auf max. Spannung ist (500micos = 0%, 1500micos = 100%)
+float Prozent;             //prozentuale Zeit der max. Zeit, die das Signal auf max. Spannung ist (500micos = 0%, 1500micos = 100%)
 float pause;               //Zeit in ms, die Spannung auf max. Spannung ist
 float Bogenmass;
 
