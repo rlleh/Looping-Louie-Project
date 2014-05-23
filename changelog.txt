@@ -2,6 +2,10 @@
 changelog
 _________
 
+"variable Aenderungsgeschwindigkeit hinzugefügt" 14:23 23.505.2014
+- es wurde eine Variable hinzugefügt, mit der die Geschwindigkeit der Geschwindigkeitsänderung
+  bestimmt werden kann. Sie bestimmt unter anderem, wie genau und in wie vielen Durchläufen 
+  die Sinuskurve berechnet wird. 
 
 "delay geändert"   16:25 21.05.2014
 - In die 20ms delay wird nun "pause" eingerechnet, um eine 50Hz Frequenz zu erhalten.

@@ -16,7 +16,7 @@ float Prozent;             //prozentuale Zeit der max. Zeit, die das Signal auf 
 float pause;               //Zeit in ms, die Spannung auf max. Spannung ist
 float Bogenmass;
 
- byte kontrolle;
+byte Aenderungsgeschwindigkeit = 100; //Standart ist 100, je höher desto langsammer erfolgt die Geschwindigkeitsänderung
 
 void setup() 
 {
@@ -31,7 +31,7 @@ void loop()
   mappen();
   bewegung();
   anzeigen();
-  if (AnzahlDurchlaeufe <100)
+  if (AnzahlDurchlaeufe < Aenderungsgeschwindigkeit)
   {
     AnzahlDurchlaeufe++;
   }
@@ -43,7 +43,7 @@ void loop()
 
 void sinusrechnung() 
 {
-  Bogenmass = (AnzahlDurchlaeufe / 100 )* pi;   //muss ausgelagert werden, Rechnungen inehalb sin() nicht möglich
+  Bogenmass = (AnzahlDurchlaeufe / Aenderungsgeschwindigkeit )* pi;   //muss ausgelagert werden, Rechnungen inehalb sin() nicht möglich
   Sinuswert = sin(Bogenmass);
 }
 
@@ -55,10 +55,10 @@ void mappen()
 
 void bewegung() //Wie in "tech. Umsetzung" beschrieben wird das PWM-Signal erzeugt
 {
-  digitalWrite(servoPort, HIGH);  //Maximalspannung am ServoPort
-  delayMicroseconds (pause);  //Pause mit der bestimmten Länge (1 ms= 1000 microsekunden)
-  digitalWrite(servoPort, LOW);   //mMnimalspannung am ServoPort
-  delayMicroseconds(20000 - pause);
+  digitalWrite(servoPort, HIGH);    //Maximalspannung am ServoPort
+  delayMicroseconds (pause);        //Pause mit der bestimmten Länge (1ms = 1000 microsekunden)
+  digitalWrite(servoPort, LOW);     //Minimalspannung am ServoPort
+  delayMicroseconds(20000 - pause); //um eine 50Hz-Frequenz zu erzeugen
 }
 
 void anzeigen() //Zur Kontrolle der Variablen 
@@ -73,3 +73,6 @@ void anzeigen() //Zur Kontrolle der Variablen
    Serial.println (Prozent);
    Serial.println ("Pause:"); 
 }
+
+
+  
