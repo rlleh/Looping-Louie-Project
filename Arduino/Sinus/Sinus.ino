@@ -7,24 +7,34 @@ Die Ungenauigkeit ist auf die Rechenungenauigkeit des Arduinos zurückzuführen.
 */
 
 
+#include <Servo.h> //Implementieren der Servo-Bibliothek
+ 
+Servo myservo;     //Erstelllt eine Servoinstanz
+                
 #define servoPort 7          
 #define pi 3.1415926
 
-float AnzahlDurchlaeufe;   //Anzahl der erfolgten Schleifendurchläufe, zur Berechnung des Sinuswerts benutzt (so ist auch die Genauigkeit bzw. Geschwindigkeit der Änderung einstellbar.)
+float AnzahlDurchlaeufe=0; //Anzahl der erfolgten Schleifendurchläufe, zur Berechnung des Sinuswerts benutzt (so ist auch die Genauigkeit der Änderung einstellbar.)
 float Sinuswert;           //Ergebnis der Sinusrechnung
 float Prozent;             //prozentuale Zeit der max. Zeit, die das Signal auf max. Spannung ist (500micos = 0%, 1500micos = 100%)
-float pause;               //Zeit in ms, die Spannung auf max. Spannung ist
+float Geschwindigkeit;     //Ausgabesignal, das die Geschwindigkeit bestimmt 
 float Bogenmass;
 
 byte Genauigkeit = 100; //Standart ist 100, je höher die Zahl, desto höher ist die Genauigkeit 
-byte Verzoegerung = 3; //Standart ist 3, es beschreibt, wie oft hinter einander ein bestimmter Wert ausgegeben wird, so ist die Änderung der Geschwindigkeitsänderung einstallbar
+byte Verzoegerung = 1;  //Standart ist 1, es beschreibt, wie oft hinter einander ein bestimmter Wert ausgegeben wird, so ist die Änderung der Geschwindigkeitsänderung einstallbar
 
 void setup() 
 {
   Serial.begin (9600);
   Serial.println ("Start");
-  pinMode (servoPort, OUTPUT);
-}
+  myservo.attach(servoPort);
+  
+  myservo.write(0);     //maximaler und minimaler Wert zur Konfiguration
+  delay(1000);
+  myservo.write(180);
+  delay(1000);
+}  
+  
 
 void loop() 
 {
@@ -44,38 +54,32 @@ void loop()
 
 void sinusrechnung() 
 {
-  Bogenmass = (AnzahlDurchlaeufe / Genauigkeit )* pi;   //muss ausgelagert werden, Rechnungen inehalb sin() nicht möglich
+  Bogenmass = (AnzahlDurchlaeufe / Genauigkeit )* 2 * pi;   //muss ausgelagert werden, Rechnungen inehalb sin() nicht möglich
   Sinuswert = sin(Bogenmass);
 }
 
 void mappen()
 {
-  Prozent = Sinuswert*100;                     //da der maximale Sinuswert 1 beträgt
-  pause = map (Prozent, 0, 100, 500, 1500);    //mappen, also übertragen auf den Bereich 500 - 1500
+  Prozent = Sinuswert*100;                                 //da der maximale Sinuswert 1 beträgt
+  Geschwindigkeit = map (Prozent, -100, 100, 105, 135);    //mappen, also übertragen auf den Bereich 105 - 135 (grad), ist regler- und akkuspezifisch
 }
 
-void bewegung() //Wie in "tech. Umsetzung" beschrieben wird das PWM-Signal erzeugt
+void bewegung()
 {
-  for (int i = 1; i<Verzoegerung; i++) 
+  for (int i = 0; i<Verzoegerung; i++) 
   {
-    digitalWrite(servoPort, HIGH);    //Maximalspannung am ServoPort
-    delayMicroseconds (pause);        //Pause mit der bestimmten Länge (1ms = 1000 microsekunden)
-    digitalWrite(servoPort, LOW);     //Minimalspannung am ServoPort
-    delayMicroseconds(20000 - pause); //um eine 50Hz-Frequenz zu erzeugen
+  myservo.write(Geschwindigkeit);
   }
 }
 
-void anzeigen() //Zur Kontrolle der Variablen 
-{
-   Serial.println ("Anzahl Durchlaeufe:"); 
-   Serial.println (AnzahlDurchlaeufe);
-   Serial.println ("Bogenmass:");
-   Serial.println (Bogenmass);
-   Serial.println ("Sinuswert:");
-   Serial.println (Sinuswert);
-   Serial.println ("Prozent:");
-   Serial.println (Prozent);
-   Serial.println ("Pause:"); 
+void anzeigen() //Zur Kontrolle 
+{   
+   for (int k=50; k<((int)(Geschwindigkeit/2)); k++)  //Terminal "Oszilloskop"
+   {
+     Serial.print ("X");
+   }
+   Serial.print((Geschwindigkeit));
+   Serial.println(" Grad");
 }
 
 

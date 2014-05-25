@@ -2,6 +2,9 @@
 changelog
 _________
 
+- "Servoklasse" 01:02 26.05.2014   tag "Servoklasse"
+  Die Servoklasse wurde implementiert, die gesammte Ansteuerung ( void bewegen() ) wurde entsprechen geändert.
+
 - "var Aenderungsgeschwindigkeit entfernt, var Verzoegerung und var Genauigkeit hinzugefügt" 03:18 25.05.2014
   Die var Genauigkeit bestimmt, mit wie vielen Durchläufen sin() berechnet wird.
   Die var Verzoegerung bestimmt, wie oft ein Sinuswert ausgegeben wird, also wie schnell die Geschwindigkeitsänderung stattfindet.
