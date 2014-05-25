@@ -2,7 +2,11 @@
 changelog
 _________
 
-"variable Aenderungsgeschwindigkeit hinzugefügt" 14:23 23.505.2014
+- "var Aenderungsgeschwindigkeit entfernt, var Verzoegerung und var Genauigkeit hinzugefügt" 03:18 25.05.2014
+  Die var Genauigkeit bestimmt, mit wie vielen Durchläufen sin() berechnet wird.
+  Die var Verzoegerung bestimmt, wie oft ein Sinuswert ausgegeben wird, also wie schnell die Geschwindigkeitsänderung stattfindet.
+
+"variable Aenderungsgeschwindigkeit hinzugefügt" 14:23 23.05.2014
 - es wurde eine Variable hinzugefügt, mit der die Geschwindigkeit der Geschwindigkeitsänderung
   bestimmt werden kann. Sie bestimmt unter anderem, wie genau und in wie vielen Durchläufen 
   die Sinuskurve berechnet wird. 
