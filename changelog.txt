@@ -2,12 +2,17 @@
 changelog
 _________
 
+- "var Prozent entfernt" 17:07 27.05.2014
+  Die var Prozent wurde entfernt
+
 - "Servoklasse" 01:02 26.05.2014   tag "Servoklasse"
   Die Servoklasse wurde implementiert, die gesammte Ansteuerung ( void bewegen() ) wurde entsprechen geändert.
+  Zur Kontrolle wurde ein "Terminal Oszilloskop" hinzugefügt, dass die Sinuskurve veranschaulicht.
 
 - "var Aenderungsgeschwindigkeit entfernt, var Verzoegerung und var Genauigkeit hinzugefügt" 03:18 25.05.2014
   Die var Genauigkeit bestimmt, mit wie vielen Durchläufen sin() berechnet wird.
-  Die var Verzoegerung bestimmt, wie oft ein Sinuswert ausgegeben wird, also wie schnell die Geschwindigkeitsänderung stattfindet.
+  Die var Verzoegerung bestimmt, wie oft ein Sinuswert ausgegeben wird, also wie schnell die 
+  Geschwindigkeitsänderung stattfindet.
 
 "variable Aenderungsgeschwindigkeit hinzugefügt" 14:23 23.05.2014
 - es wurde eine Variable hinzugefügt, mit der die Geschwindigkeit der Geschwindigkeitsänderung
