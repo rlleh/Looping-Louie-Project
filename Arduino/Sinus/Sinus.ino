@@ -16,7 +16,6 @@ Servo myservo;     //Erstelllt eine Servoinstanz
 
 float AnzahlDurchlaeufe=0; //Anzahl der erfolgten Schleifendurchläufe, zur Berechnung des Sinuswerts benutzt (so ist auch die Genauigkeit der Änderung einstellbar.)
 float Sinuswert;           //Ergebnis der Sinusrechnung
-float Prozent;             //prozentuale Zeit der max. Zeit, die das Signal auf max. Spannung ist (500micos = 0%, 1500micos = 100%)
 float Geschwindigkeit;     //Ausgabesignal, das die Geschwindigkeit bestimmt 
 float Bogenmass;
 
@@ -59,8 +58,7 @@ void sinusrechnung()
 }
 
 void mappen()
-{
-                                //da der maximale Sinuswert 1 beträgt
+{                                
   Geschwindigkeit = map (Sinuswert, -1, 1, 105, 135);    //mappen, also übertragen auf den Bereich 105 - 135 (grad), ist regler- und akkuspezifisch
 }
 
@@ -84,3 +82,4 @@ void anzeigen() //Zur Kontrolle
 
 
   
+
