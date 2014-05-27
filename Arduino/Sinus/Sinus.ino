@@ -59,8 +59,7 @@ void sinusrechnung()
 }
 
 void mappen()
-{
-  Prozent = Sinuswert*100;                                 //da der maximale Sinuswert 1 beträgt
+{                                
   Geschwindigkeit = map (Prozent, -100, 100, 105, 135);    //mappen, also übertragen auf den Bereich 105 - 135 (grad), ist regler- und akkuspezifisch
 }
 
