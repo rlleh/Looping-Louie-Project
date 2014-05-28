@@ -59,7 +59,7 @@ void sinusrechnung()
 
 void mappen()
 {                                
-  Geschwindigkeit = map (Sinuswert, -1, 1, 105, 135);    //mappen, also übertragen auf den Bereich 105 - 135 (grad), ist regler- und akkuspezifisch
+  Geschwindigkeit = (Sinuswert*15)+120 ;
 }
 
 void bewegung()
@@ -76,9 +76,9 @@ void anzeigen() //Zur Kontrolle
    {
      Serial.print ("X");
    }
-   Serial.print((Geschwindigkeit));
-   Serial.println(" Grad");
+  Serial.println("");
 }
+
 
 
   

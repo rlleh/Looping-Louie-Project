@@ -2,6 +2,11 @@
 changelog
 _________
 
+- "mappen umgangegen"
+  In der Funktion void mappen() ist das Problem entstanden, dass
+  für alle Werte, die nicht Extrempunkte sind, der Mittelwert ausgegeben wurde.
+  Dies wurde durch "Geschwindigkeit = Sinuswert*halbeSpanne + Mittelwert" umgenagen.
+
 - "var Prozent entfernt" 17:07 27.05.2014
   Die var Prozent wurde entfernt
 
