@@ -6,6 +6,8 @@ Ziel ist es, eine sinusförmige Geschwindigkeit zu erzeugen.
 Die Ungenauigkeit ist auf die Rechenungenauigkeit des Arduinos zurückzuführen.
 */
 
+// Debugging-Infos werden nur über die Serielle Schnittstelle gesendet, wenn DEBUGING definiert ist. Auskommentieren, wenn nicht benötigt
+#define DEBUGGING
 
 #include <Servo.h> //Implementieren der Servo-Bibliothek
  
@@ -24,8 +26,10 @@ byte Verzoegerung = 1;  //Standart ist 1, es beschreibt, wie oft hinter einander
 
 void setup() 
 {
+  #ifdef DEBUGGING
   Serial.begin (9600);
   Serial.println ("Start");
+  #endif
   myservo.attach(servoPort);
   
   myservo.write(0);     //maximaler und minimaler Wert zur Konfiguration
@@ -74,9 +78,13 @@ void anzeigen() //Zur Kontrolle
 {   
    for (int k=50; k<((int)(Geschwindigkeit/2)); k++)  //Terminal "Oszilloskop"
    {
+     #ifdef DEBUGGING
      Serial.print ("X");
+     #endif
    }
+   #ifdef DEBUGGING
   Serial.println("");
+  #endif
 }
 
 

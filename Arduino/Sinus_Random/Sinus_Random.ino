@@ -6,6 +6,8 @@ Sinus
  Die Ungenauigkeit ist auf die Rechenungenauigkeit des Arduinos zurückzuführen.
  */
 
+// Debugging-Infos werden nur über die Serielle Schnittstelle gesendet, wenn DEBUGING definiert ist. Auskommentieren, wenn nicht benötigt
+#define DEBUGGING
 
 #include <Servo.h> //Implementieren der Servo-Bibliothek
 
@@ -22,8 +24,10 @@ int Durchlaufe_counter = 0;                 // Laufvariable im Interrupt
 
 void setup() 
 {
+  #ifdef DEBUGGING
   Serial.begin (9600);
   Serial.println ("Start");
+  #endif
   myservo.attach(servoPort);
 
   // Timer 2 zur Interruptgenerierung für konstante Frequenzen initialisieren
@@ -51,9 +55,7 @@ ISR(Timer2_OVF_vect) // interrupt service routine that wraps a user defined func
   {
     int geschwindigkeit = mappen(sinusrechnung(Durchlaufe_counter));
     myservo.write(geschwindigkeit);
-#ifdef DEBUG_enabled
     anzeigen(geschwindigkeit);
-#endif
     Durchlaufe_counter++;
   }
   else 
@@ -86,9 +88,13 @@ void anzeigen(int Geschwindigkeit) //Zur Kontrolle
 {   
   for (int k=50; k<((int)(Geschwindigkeit/2)); k++)  //Terminal "Oszilloskop"
   {
+    #ifdef DEBUGGING
     Serial.print ("X");
+    #endif
   }
+  #ifdef DEBUGGING
   Serial.print((Geschwindigkeit));
   Serial.println(" Grad");
+  #endif
 }
 
