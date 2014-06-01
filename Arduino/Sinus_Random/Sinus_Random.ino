@@ -20,7 +20,8 @@ byte Timer_period_laeng = 255; // Timer Counter value auf 256 setzten (größtm�
 // Byte reicht, da Timer2 nur 8 Bit hat
 const int Durchlaufe_sin_generation = 100;  // Schritte der Sinus generation
 int Durchlaufe_counter = 0;                 // Laufvariable im Interrupt
-
+int CounterValue  = 150;                   // Timer Counter value auf 150 setzten (mittlerer Wert für mittlere Frequenz); Hiermit kann die Frequenz geregelt werden; Bereich[1;255]
+byte PeriodCounter = 0;
 
 void setup() 
 {
@@ -32,7 +33,7 @@ void setup()
 
   // Timer 2 zur Interruptgenerierung für konstante Frequenzen initialisieren
   noInterrupts();   // alle Interrupts deaktivieren
-  TCNT2 = 254;      // Timer Counter value auf 256 setzten (größtmöglichster Wert für kleinste Frequenz); Hiermit kann die Frequenz geregelt werden
+  TCNT2  = CounterValue;
   TCCR2A = 0;       // Konfiguration von Timer2 löschen
   TCCR2B = 0;
   TCCR2B = (1 << CS12 | 0 << CS11 | 1 << CS10 );   // Prescaler: 1024
@@ -45,12 +46,14 @@ void setup()
   delay(1000);
   myservo.write(180);
   delay(1000);
+  
+  randomSeed(analogRead(0)); // Zufallsgenerator mit ADC-Rauschen initialisieren
 }  
 
 
 ISR(Timer2_OVF_vect) // interrupt service routine that wraps a user defined function supplied by attachInterrupt
 {
-  TCNT2 = 254; // preload timer
+  TCNT2 = CounterValue; // preload timer
   if (Durchlaufe_counter < Durchlaufe_sin_generation)
   {
     int geschwindigkeit = mappen(sinusrechnung(Durchlaufe_counter));
@@ -62,6 +65,19 @@ ISR(Timer2_OVF_vect) // interrupt service routine that wraps a user defined func
   {
     Durchlaufe_counter = 0;
     // TODO: Hier möglicherweise noch die Geschwindigkeit für den nächsten Durchlauf manipulieren
+    // geringe zufällige Geschwindigkeitsänderung nach 3 Perioden vornehmen:
+    if(PeriodCounter >= 3) {
+      int rand = random(10,31)-15;
+      if((CounterValue+rand)<=50 || (CounterValue+rand)>=254) {
+        CounterValue -= rand;
+      } else {
+        CounterValue += rand;
+      }
+      PeriodCounter = 0;
+    } else
+      PeriodCounter++;
+    
+    
   }
 }
 
