@@ -9,51 +9,23 @@ Sinus
 // Debugging-Infos werden nur über die Serielle Schnittstelle gesendet, wenn DEBUGING definiert ist. Auskommentieren, wenn nicht benötigt
 #define DEBUGGING
 
-#include <Servo.h> //Implementieren der Servo-Bibliothek
+#include <Servo.h>     //Implementieren der Servo-Bibliothek
+#include "MsTimer2.h"  // Einbinden der lokalen MsTimer2 Bibliothek
 
 Servo myservo;     //Erstelllt eine Servoinstanz
 
-#define servoPort 7          
+#define servoPort 7
+#define dipwmPort 11
 #define pi 3.1415926
 
-byte Timer_period_laeng = 255; // Timer Counter value auf 256 setzten (größtmöglichster Wert für kleinste Frequenz); Hiermit kann die Frequenz geregelt werden
-// Byte reicht, da Timer2 nur 8 Bit hat
+byte Timer_period = 10; // in ms; Periodendauer, bis interruptfunct() wieder aufgerufen wird
 const int Durchlaufe_sin_generation = 100;  // Schritte der Sinus generation
 int Durchlaufe_counter = 0;                 // Laufvariable im Interrupt
-int CounterValue  = 150;                   // Timer Counter value auf 150 setzten (mittlerer Wert für mittlere Frequenz); Hiermit kann die Frequenz geregelt werden; Bereich[1;255]
-byte PeriodCounter = 0;
+int PeriodCounter = 0;
 
-void setup() 
+
+void interruptfunct(void) // Wird durch MsTimer2 regelmäßig aufgerufen
 {
-  #ifdef DEBUGGING
-  Serial.begin (9600);
-  Serial.println ("Start");
-  #endif
-  myservo.attach(servoPort);
-
-  // Timer 2 zur Interruptgenerierung für konstante Frequenzen initialisieren
-  noInterrupts();   // alle Interrupts deaktivieren
-  TCNT2  = CounterValue;
-  TCCR2A = 0;       // Konfiguration von Timer2 löschen
-  TCCR2B = 0;
-  TCCR2B = (1 << CS12 | 0 << CS11 | 1 << CS10 );   // Prescaler: 1024
-  // --> Timer Frequenz: 16 000 000 Hz / 1024 = 15 625 Hz
-  //  --> Interrupt-Frequenz bei Timer Counter value von 256 (Maixumum): 15 625 Hz / 256 = ~61Hz
-  TIMSK2 |= (1 << TOIE2); // Interrupt Timer2_OVF_vect beim Überlauf aktivieren
-  interrupts();     // Alle Interrupts wieder aktivieren
-
-  myservo.write(0); //maximaler und minimaler Wert zur Konfiguration
-  delay(1000);
-  myservo.write(180);
-  delay(1000);
-  
-  randomSeed(analogRead(0)); // Zufallsgenerator mit ADC-Rauschen initialisieren
-}  
-
-
-ISR(Timer2_OVF_vect) // interrupt service routine that wraps a user defined function supplied by attachInterrupt
-{
-  TCNT2 = CounterValue; // preload timer
   if (Durchlaufe_counter < Durchlaufe_sin_generation)
   {
     int geschwindigkeit = mappen(sinusrechnung(Durchlaufe_counter));
@@ -66,12 +38,12 @@ ISR(Timer2_OVF_vect) // interrupt service routine that wraps a user defined func
     Durchlaufe_counter = 0;
     // TODO: Hier möglicherweise noch die Geschwindigkeit für den nächsten Durchlauf manipulieren
     // geringe zufällige Geschwindigkeitsänderung nach 3 Perioden vornehmen:
-    if(PeriodCounter >= 3) {
-      int rand = random(10,31)-15;
-      if((CounterValue+rand)<=50 || (CounterValue+rand)>=254) {
-        CounterValue -= rand;
+    if(PeriodCounter >= 25) {
+      int rand = random(10)-5; // rand ist zwischen -5 .. +5
+      if((Timer_period+rand)<=5 || (Timer_period+rand)>=50) {
+        Timer_period -= rand;
       } else {
-        CounterValue += rand;
+        Timer_period += rand;
       }
       PeriodCounter = 0;
     } else
@@ -79,6 +51,25 @@ ISR(Timer2_OVF_vect) // interrupt service routine that wraps a user defined func
     
     
   }
+}
+
+void setup() 
+{
+  #ifdef DEBUGGING
+  Serial.begin (9600);
+  Serial.println ("Start");
+  #endif
+  myservo.attach(servoPort);
+
+  MsTimer2::set(10, interruptfunct); // 10ms period <-> 100Hz freqency
+  MsTimer2::start();
+
+  myservo.write(0); //maximaler und minimaler Wert zur Konfiguration
+  delay(500);
+  myservo.write(180);
+  delay(500);
+  
+  randomSeed(analogRead(0)); // Zufallsgenerator mit ADC-Rauschen initialisieren
 }
 
 
