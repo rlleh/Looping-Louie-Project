@@ -18,8 +18,8 @@ Servo myservo;     //Erstelllt eine Servoinstanz
 #define dipwmPort 11
 #define pi 3.1415926
 
-byte Timer_period = 10; // in ms; Periodendauer, bis interruptfunct() wieder aufgerufen wird
-const int Durchlaufe_sin_generation = 100;  // Schritte der Sinus generation
+int Timer_period = 50; // in ms; Periodendauer, bis interruptfunct() wieder aufgerufen wird
+const int Durchlaufe_sin_generation = 50;  // Schritte der Sinus generation
 int Durchlaufe_counter = 0;                 // Laufvariable im Interrupt
 int PeriodCounter = 0;
 
@@ -36,16 +36,19 @@ void interruptfunct(void) // Wird durch MsTimer2 regelmäßig aufgerufen
   else 
   {
     Durchlaufe_counter = 0;
-    // TODO: Hier möglicherweise noch die Geschwindigkeit für den nächsten Durchlauf manipulieren
+    // Hier möglicherweise noch die Geschwindigkeit für den nächsten Durchlauf manipulieren
     // geringe zufällige Geschwindigkeitsänderung nach 3 Perioden vornehmen:
     if(PeriodCounter >= 25) {
       int rand = random(10)-5; // rand ist zwischen -5 .. +5
-      if((Timer_period+rand)<=5 || (Timer_period+rand)>=50) {
+      if((Timer_period+rand)<=80 || (Timer_period+rand)>=30) {
         Timer_period -= rand;
       } else {
         Timer_period += rand;
       }
       PeriodCounter = 0;
+      MsTimer2::stop();
+      MsTimer2::set(Timer_period, interruptfunct);
+      MsTimer2::start();
     } else
       PeriodCounter++;
     
@@ -61,7 +64,7 @@ void setup()
   #endif
   myservo.attach(servoPort);
 
-  MsTimer2::set(10, interruptfunct); // 10ms period <-> 100Hz freqency
+  MsTimer2::set(Timer_period, interruptfunct); // 10ms period <-> 100Hz freqency
   MsTimer2::start();
 
   myservo.write(0); //maximaler und minimaler Wert zur Konfiguration
@@ -80,14 +83,14 @@ void loop()
 
 float sinusrechnung(int durchlaeufe) 
 {
-  float Bogenmass = (durchlaeufe / Durchlaufe_sin_generation)* 2 * pi; // liegt immer zwischen 0...2pi, es wird immer nur die erste Periodendauer berechnet
-  //muss ausgelagert werden, Rechnungen inehalb sin() nicht möglich
-  return(sin(Bogenmass));
+  float Bogenmass = ((float)durchlaeufe / (float)Durchlaufe_sin_generation)* (float)2 * pi; // liegt immer zwischen 0...2pi, es wird immer nur die erste Periodendauer berechnet
+  //muss ausgelagert werden, Rechnungen innerhalb sin() nicht möglich
+  return(sin(Bogenmass)*100);
 }
 
 int mappen(int Sinuswert)
 {                                
-  return( map(round(Sinuswert*100), -100, 100, 105, 135) );    //mappen, also übertragen auf den Bereich 105 - 135 (grad), ist regler- und akkuspezifisch
+  return( map(round(Sinuswert), -100, 100, 105, 135) );    //mappen, also übertragen auf den Bereich 105 - 135 (grad), ist regler- und akkuspezifisch
 }
 
 
