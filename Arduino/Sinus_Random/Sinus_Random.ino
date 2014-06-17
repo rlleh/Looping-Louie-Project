@@ -56,7 +56,7 @@ void interruptfunct(void) // Wird durch MsTimer2 regelmäßig aufgerufen
 void setup() 
 {
   #ifdef DEBUGGING
-  Serial.begin (9600);
+  Serial.begin (115200);
   Serial.println ("Start");
   #endif
   myservo.attach(servoPort);
