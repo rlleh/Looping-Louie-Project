@@ -4,6 +4,10 @@ Sinus
  
  Ziel ist es, eine sinusförmige Geschwindigkeit zu erzeugen. 
  Die Ungenauigkeit ist auf die Rechenungenauigkeit des Arduinos zurückzuführen.
+
+ Die Geschwindigkeitsänderung kann durch Durchlaufe_sin_generation eingestellt werden:
+ Ein größerer Wert verlangsamt die Geschwindigkeitsänderung, kleinere Werte führen zum schnelleren Durchlauf der Sinus-Welle
+ Die Werte sollen zwischen 25 und 500 liegen.
  */
 
 // Debugging-Infos werden nur über die Serielle Schnittstelle gesendet, wenn DEBUGING definiert ist. Auskommentieren, wenn nicht benötigt
@@ -15,7 +19,8 @@ Sinus
 Servo myservo;     //Erstelllt eine Servoinstanz
 
 #define servoPort 7
-#define dipwmPort 11
+#define dipwmPort 6 // benutzt timer0 für pwm
+
 #define pi 3.1415926
 
 int Timer_period = 50; // in ms; Periodendauer, bis interruptfunct() wieder aufgerufen wird
@@ -28,9 +33,13 @@ void interruptfunct(void) // Wird durch MsTimer2 regelmäßig aufgerufen
 {
   if (Durchlaufe_counter < Durchlaufe_sin_generation)
   {
-    int geschwindigkeit = mappen(sinusrechnung(Durchlaufe_counter));
-    myservo.write(geschwindigkeit);
-    anzeigen(geschwindigkeit);
+    int geschwindigkeit_servo = mappen(sinusrechnung(Durchlaufe_counter));
+    myservo.write(geschwindigkeit_servo);
+    
+    int geschwindigkeit_dipwm = mappen_dipwm(sinusrechnung(Durchlaufe_counter));
+    analogWrite(dipwmPort, geschwindigkeit_dipwm);
+    
+    anzeigen(geschwindigkeit_servo);
     Durchlaufe_counter++;
   }
   else 
@@ -68,14 +77,15 @@ void setup()
   Serial.println ("Start");
   #endif
   myservo.attach(servoPort);
-
+  pinMode(dipwmPort, OUTPUT);
+  
   MsTimer2::set(Timer_period, interruptfunct); // 10ms period <-> 100Hz freqency
   MsTimer2::start();
 
   myservo.write(0); //maximaler und minimaler Wert zur Konfiguration
-  delay(500);
+  delay(1000);
   myservo.write(180);
-  delay(500);
+  delay(1000);
   
   randomSeed(analogRead(0)); // Zufallsgenerator mit ADC-Rauschen initialisieren
 }
@@ -96,6 +106,11 @@ float sinusrechnung(int durchlaeufe)
 int mappen(int Sinuswert)
 {                                
   return( map(round(Sinuswert), -100, 100, 105, 135) );    //mappen, also übertragen auf den Bereich 105 - 135 (grad), ist regler- und akkuspezifisch
+}
+
+int mappen_dipwm(int Sinuswert)
+{                                
+  return( map(round(Sinuswert), -100, 100, 0, 254) );    //mappen, also übertragen auf den Bereich 0..254 für einen Duty cycle zwischen 0% und 100% (analogWrite/pwm)
 }
 
 
