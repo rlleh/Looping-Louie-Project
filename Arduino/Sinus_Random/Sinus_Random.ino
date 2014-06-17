@@ -38,21 +38,26 @@ void interruptfunct(void) // Wird durch MsTimer2 regelmäßig aufgerufen
     Durchlaufe_counter = 0;
     // Hier möglicherweise noch die Geschwindigkeit für den nächsten Durchlauf manipulieren
     // geringe zufällige Geschwindigkeitsänderung nach 3 Perioden vornehmen:
-    if(PeriodCounter >= 25) {
-      int rand = random(10)-5; // rand ist zwischen -5 .. +5
-      if((Timer_period+rand)<=80 || (Timer_period+rand)>=30) {
+    if(PeriodCounter >= 1) { // wird alle 2 vollstänigen sinus-durchläufe aufgerufen
+      int rand = random(50)-25; // rand ist zwischen -5 .. +5
+      if((Timer_period+rand)>=80 || (Timer_period+rand)<=30) {
         Timer_period -= rand;
       } else {
         Timer_period += rand;
       }
-      PeriodCounter = 0;
+      PeriodCounter = 1;
       MsTimer2::stop();
       MsTimer2::set(Timer_period, interruptfunct);
       MsTimer2::start();
-    } else
+      #ifdef DEBUGGING
+      Serial.print("Timer_period=");
+      Serial.print(Timer_period);
+      Serial.print("; rand=");
+      Serial.println(rand);
+      #endif
+    } else {
       PeriodCounter++;
-    
-    
+    }
   }
 }
 
@@ -104,8 +109,7 @@ void anzeigen(int Geschwindigkeit) //Zur Kontrolle
   }
   #ifdef DEBUGGING
   Serial.print((Geschwindigkeit));
-  Serial.print("Grad; Timer_period=");
-  Serial.println(Timer_period);
+  Serial.println("Grad");
   #endif
 }
 
