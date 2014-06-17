@@ -104,7 +104,8 @@ void anzeigen(int Geschwindigkeit) //Zur Kontrolle
   }
   #ifdef DEBUGGING
   Serial.print((Geschwindigkeit));
-  Serial.println(" Grad");
+  Serial.print("Grad; Timer_period=");
+  Serial.println(Timer_period);
   #endif
 }
 
